@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>山东方言趣味测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .quiz-container {
+            padding: 40px;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .question h3 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .option.selected {
+            border-color: #f5576c;
+            background: #ffebee;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .result {
+            text-align: center;
+            padding: 50px;
+        }
+
+        .result h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .score {
+            font-size: 4em;
+            font-weight: bold;
+            color: #f5576c;
+            margin: 30px 0;
+        }
+
+        .result-text {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .pinyin {
+            color: #666;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+
+        .fill-in-blank {
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1.1em;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .fill-in-blank:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>山东方言趣味测试</h1>
+            <p>看看你对山东方言的了解有多少！</p>
+        </div>
+
+        <div class="quiz-container">
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+
+            <div id="quiz">
+                <!-- 问题将通过JavaScript动态生成 -->
+            </div>
+
+            <button class="btn" id="submit-btn">提交答案</button>
+        </div>
+
+        <div class="result hidden">
+            <h2>测试结果</h2>
+            <div class="score" id="score">0/100</div>
+            <div class="result-text" id="result-text"></div>
+            <button class="btn" id="restart-btn">重新测试</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: '山东方言中“古扎”(gǔ zha)指的是？',
+                options: ['饺子', '包子', '馒头', '面条'],
+                answer: 0,
+                type: 'single'
+            },
+            {
+                question: '山东方言中“夜来”(yè lái)指的是？',
+                options: ['昨天', '今天', '明天', '晚上'],
+                answer: 0,
+                type: 'single'
+            },
+            {
+                question: '山东方言中“拉呱”(lā guā)是什么意思？',
+                options: ['聊天', '吃饭', '睡觉', '工作'],
+                answer: 0,
+                type: 'single'
+            },
+            {
+                question: '山东方言中“揍嘛”(zòu má)意思是？',
+                options: ['干什么', '吃饭', '睡觉', '工作'],
+                answer: 0,
+                type: 'single'
+            },
+            {
+                question: '济南方言中“各拉拜子”(gè lā bài zi)指的是？',
+                options: ['膝盖', '手肘', '脚踝', '肩膀'],
+                answer: 0,
+                type: 'single'
+            },
+            {
+                question: '山东方言中“小嫚”(xiǎo mān)指的是？',
+                options: ['小女孩', '小男孩', '老太太', '老头'],
+                answer: 0,
+                type: 'single'
+            },
+            {
+                question: '山东方言中“扎固”(zhā gu)是什么意思？',
+                options: ['修理', '吃饭', '睡觉', '工作'],
+                answer: 0,
+                type: 'single'
+            },
+            {
+                question: '山东方言中“潮巴”(cháo bā)是形容人？',
+                options: ['傻', '聪明', '勤快', '懒惰'],
+                answer: 0,
+                type: 'single'
+            },
+            {
+                question: '山东方言中“得劲儿”(déi jìn er)的意思是？',
+                options: ['吃力', '满意', '困难', '无聊'],
+                answer: 1,
+                type: 'single'
+            },
+            {
+                question: '山东方言中“秃噜皮”(tū lu pí)指什么？',
+                options: ['脱皮', '傻笑', '说谎', '嚎叫'],
+                answer: 0,
+                type: 'single'
+            },
+            {
+                question: '山东方言中“扎固”(zhā gu)是什么意思？',
+                options: ['修理', '吃饭', '睡觉', '工作'],
+                answer: 0,
+                type: 'single'
+            },
+            {
+                question: '山东方言中“杠赛来”(gàng sài lái)最接近普通话的哪个意思？',
+                options: ['非常好', '担心', '不满意', '不高兴'],
+                answer: 0,
+                type: 'single'
+            },
+            {
+                question: '山东方言中“咋呼”(zǎ hu)的意思是？',
+                options: ['嚎叫', '拍马屁', '算账', '吵架'],
+                answer: 0,
+                type: 'single'
+            },
+            {
+                question: '山东方言中“拾掇”(shí duo)是什么意思？',
+                options: ['整理', '偷窃', '睡觉', '吃饭'],
+                answer: 0,
+                type: 'single'
+            },
+            {
+                question: '山东方言中“长果”(cháng guǒ)是什么意思？',
+                options: ['花生', '苹果', '香蕉', '橙子'],
+                answer: 0,
+                type: 'single'
+            },
+            {
+                question: '山东方言中“刺挠”(cì nao)是什么意思？',
+                options: ['发痒/烦躁', '吃饭', '睡觉', '工作'],
+                answer: 0,
+                type: 'single'
+            },
+            {
+                question: '山东方言中“木乱”(mù luan)是什么意思？',
+                options: ['心烦', '吃饭', '睡觉', '工作'],
+                answer: 0,
+                type: 'single'
+            },
+            {
+                question: '山东方言中“两乔”(liǎng qiáo)指的是？',
+                options: ['连襟', '兄弟', '姐妹', '朋友'],
+                answer: 0,
+                type: 'single'
+            },
+            {
+                question: '山东方言中“芫荽”(yán suī)指的是？',
+                options: ['香菜', '芹菜', '菠菜', '白菜'],
+                answer: 0,
+                type: 'single'
+            },
+            {
+                question: '山东方言中“瓦古”(wǎ gǔ)的意思是？',
+                options: ['委屈', '高兴', '惊讶', '失望'],
+                answer: 0,
+                type: 'single'
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedAnswers = [];
+
+        function loadQuestion() {
+            const quiz = document.getElementById('quiz');
+            quiz.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <h3>第${index + 1}题：${q.question}</h3>
+                    <div class="options">
+                        ${q.options.map((option, i) => `
+                            <div class="option" data-question="${index}" data-option="${i}">
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                quiz.appendChild(questionDiv);
+            });
+
+            // 添加选项点击事件
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    const questionIndex = e.target.dataset.question;
+                    const optionIndex = e.target.dataset.option;
+
+                    // 移除同一问题的其他选中状态
+                    document.querySelectorAll(`.option[data-question="${questionIndex}"]`).forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+
+                    // 添加当前选中状态
+                    e.target.classList.add('selected');
+
+                    // 保存答案
+                    selectedAnswers[questionIndex] = parseInt(optionIndex);
+                });
+            });
+        }
+
+        function calculateScore() {
+            score = 0;
+            questions.forEach((q, index) => {
+                if (selectedAnswers[index] === q.answer) {
+                    score += 5;
+                }
+            });
+            return score;
+        }
+
+        function showResult() {
+            const quizContainer = document.querySelector('.quiz-container');
+            const resultContainer = document.querySelector('.result');
+            const scoreElement = document.getElementById('score');
+            const resultTextElement = document.getElementById('result-text');
+
+            const finalScore = calculateScore();
+            scoreElement.textContent = `${finalScore}/100`;
+
+            let resultText = '';
+            if (finalScore >= 80) {
+                resultText = '方言大师！你对山东方言了如指掌，不愧是地道山东人！';
+            } else if (finalScore >= 60) {
+                resultText = '方言达人！你对山东方言有深入了解，继续加油！';
+            } else if (finalScore >= 40) {
+                resultText = '方言爱好者！你对山东方言有一定了解，多听听多说说会更好！';
+            } else if (finalScore >= 20) {
+                resultText = '方言初学者！你对山东方言有初步认识，继续努力学习吧！';
+            } else {
+                resultText = '方言小白！多了解一些山东方言知识，感受齐鲁文化的魅力吧！';
+            }
+
+            resultTextElement.textContent = resultText;
+
+            quizContainer.classList.add('hidden');
+            resultContainer.classList.remove('hidden');
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            selectedAnswers = [];
+            const quizContainer = document.querySelector('.quiz-container');
+            const resultContainer = document.querySelector('.result');
+
+            quizContainer.classList.remove('hidden');
+            resultContainer.classList.add('hidden');
+            loadQuestion();
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            loadQuestion();
+
+            document.getElementById('submit-btn').addEventListener('click', showResult);
+            document.getElementById('restart-btn').addEventListener('click', restartQuiz);
+        });
+    </script>
+</body>
+</html>
